@@ -1,4 +1,8 @@
 #include <Servo.h>
+#include <SoftwareSerial.h>
+#include "robocon-blt-protocol.cpp"
+
+SoftwareSerial Bluetooth(9, 8); // RX, TX
 
 Servo Servo_1;
 Servo Servo_2;
@@ -6,7 +10,6 @@ Servo Servo_3;
 Servo Servo_4;
 Servo Servo_5;
 Servo Servo_6;
-
 
 int Angulo = 0;
 int Angulo_1 = 90;
@@ -16,16 +19,16 @@ int Angulo_4 = 90;
 int Angulo_5 = 90;
 int Angulo_6 = 90;
 
-char Estado;
+String Estado;
 int Velocidad = 25;
 int Avance = 10;
-
 
 byte Mover_Servo(Servo Servo_1, int Angulo_Actual, int Angulo, int Velocidad);
 
 void setup()
 {
   Serial.begin(9600);
+  Bluetooth.begin(9600);
 
   Servo_1.attach(2);
   Servo_2.attach(3);
@@ -36,116 +39,72 @@ void setup()
 
   Home();
   delay(2000);
+  Serial.println(SERVO_1_DERECHA);
 }
 
 void loop()
 {
-  if (Serial.available() > 0)
+  if (Bluetooth.available() > 0)
   {
-    Estado = Serial.read();
-  }
-  switch (Estado)
-  {
-    case 'e':
-      if (Angulo_1 > 0)
-      {
-        Angulo_1 = Mover_Servo(Servo_1, Angulo_1, Angulo_1 - Avance, Velocidad);
-      }
-      break;
+    char _command = Bluetooth.read();
 
-    case 'd':
-      if (Angulo_1 < 180)
-      {
-        Angulo_1 = Mover_Servo(Servo_1, Angulo_1, Angulo_1 + Avance, Velocidad);
-      }
-      break;
+    if (_command != '#' && _command != '!' && _command != '\n' && _command != '\r' && _command != ' ' && _command != '\t' && _command != '\0' && _command != '\b' && _command != '\f' && _command != '\v' && _command != '\a' && _command != '\e')
+    {
+      Estado += _command;
+    }
 
-    case 'g':
-      if (Angulo_2 > 0)
-      {
-        Angulo_2 = Mover_Servo(Servo_2, Angulo_2, Angulo_2 - Avance, Velocidad);
-      }
-      break;
+    else if (_command == '#')
+    {
 
-    case 'f':
-      if (Angulo_2 < 180)
-      {
-        Angulo_2 = Mover_Servo(Servo_2, Angulo_2, Angulo_2 + Avance, Velocidad);
-      }
-      break;
-
-    case 'h':
-      if (Angulo_3 < 180)
-      {
-        Angulo_3 = Mover_Servo(Servo_3, Angulo_3, Angulo_3 - Avance, Velocidad);
-      }
-
-      break;
-
-    case 'i':
-      if (Angulo_3 > 0)
-      {
-        Angulo_3 = Mover_Servo(Servo_3, Angulo_3, Angulo_3 + Avance, Velocidad);
-      }
-      break;
-
-    case 'j':
-      if (Angulo_4 < 180)
-      {
-        Angulo_4 = Mover_Servo(Servo_4, Angulo_4, Angulo_4 - Avance, Velocidad);
-      }
-
-      break;
-
-    case 'k':
-      if (Angulo_4 > 0)
-      {
-        Angulo_4 = Mover_Servo(Servo_4, Angulo_4, Angulo_4 + Avance, Velocidad);
-      }
-      break;
-
-    case 'l':
-      if (Angulo_5 < 180)
-      {
-        Angulo_5 = Mover_Servo(Servo_5, Angulo_5, Angulo_5 - Avance, Velocidad);
-      }
-
-      break;
-
-    case 'm':
-      if (Angulo_5 > 0)
-      {
-        Angulo_5 = Mover_Servo(Servo_5, Angulo_5, Angulo_5 + Avance, Velocidad);
-      }
-      break;
-
-    case 'n':
-      if (Angulo_6 < 180)
-      {
-        Angulo_6 = Mover_Servo(Servo_6, Angulo_6, Angulo_6 - Avance, Velocidad);
-      }
-
-      break;
-
-    case 'o':
-      if (Angulo_6 > 0)
-      {
-        Angulo_6 = Mover_Servo(Servo_6, Angulo_6, Angulo_6 + Avance, Velocidad);
-      }
-      break;
-
-
-    case 'p':
-      //Funcion 1
-      Home();
-      break;
-    case 'q':
-      //Funcion 1
-      break;
-
+      Estado = "";
+    }
   }
 
+  if (Angulo_1 > 0 && Estado == SERVO_1_DERECHA)
+  {
 
+    Angulo_1 = Mover_Servo(Servo_1, Angulo_1, Angulo_1 - Avance, Velocidad);
+  }
+  else if (Angulo_1 < 180 && Estado == SERVO_1_IZQUIERDA)
+  {
+    Angulo_1 = Mover_Servo(Servo_1, Angulo_1, Angulo_1 + Avance, Velocidad);
+  }
+  else if (Angulo_2 > 0 && Estado == SERVO_2_DERECHA)
+  {
+    Angulo_2 = Mover_Servo(Servo_2, Angulo_2, Angulo_2 - Avance, Velocidad);
+  }
+  else if (Angulo_2 < 180 && Estado == SERVO_2_IZQUIERDA)
+  {
+    Angulo_2 = Mover_Servo(Servo_2, Angulo_2, Angulo_2 + Avance, Velocidad);
+  }
+  else if (Angulo_3 < 180 && Estado == SERVO_3_DERECHA)
+  {
+    Angulo_3 = Mover_Servo(Servo_3, Angulo_3, Angulo_3 - Avance, Velocidad);
+  }
+  else if (Angulo_3 > 0 && Estado == SERVO_3_IZQUIERDA)
+  {
+    Angulo_3 = Mover_Servo(Servo_3, Angulo_3, Angulo_3 + Avance, Velocidad);
+  }
+  else if (Angulo_4 < 180 && Estado == SERVO_4_DERECHA)
+  {
+    Angulo_4 = Mover_Servo(Servo_4, Angulo_4, Angulo_4 - Avance, Velocidad);
+  }
+  else if (Angulo_4 > 0 && Estado == SERVO_4_IZQUIERDA)
+  {
+    Angulo_4 = Mover_Servo(Servo_4, Angulo_4, Angulo_4 + Avance, Velocidad);
+  }
+  else if (Angulo_5 < 180 && Estado == SERVO_5_DERECHA)
+  {
+    Angulo_5 = Mover_Servo(Servo_5, Angulo_5, Angulo_5 - Avance, Velocidad);
+  }
+  else if (Angulo_5 > 0 && Estado == SERVO_5_IZQUIERDA)
+  {
+    Angulo_5 = Mover_Servo(Servo_5, Angulo_5, Angulo_5 + Avance, Velocidad);
+  }
+  else if (Angulo_6 < 180 && Estado == SERVO_6_DERECHA)
+  {
+    Angulo_6 = Mover_Servo(Servo_6, Angulo_6, Angulo_6 - Avance, Velocidad);
+  }
 }
 
 void Home()
@@ -173,8 +132,6 @@ byte Mover_Servo(Servo Servo_1, int Angulo_Actual, int Angulo, int Velocidad)
       Servo_1.write(Angulo_Actual);
       delay(Velocidad);
     }
-
   }
   return (Angulo_Actual);
-
 }
