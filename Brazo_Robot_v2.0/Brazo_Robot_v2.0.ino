@@ -1,8 +1,10 @@
-#include <Servo.h>
-#include <SoftwareSerial.h>
-#include "robocon-blt-protocol.cpp"
+/*
+  Kit Brazo Robot PLA
+  compatible con App robocon
 
-SoftwareSerial Bluetooth(9, 8); // RX, TX
+*/
+#include <Servo.h>
+#include "robocon-blt-protocol.cpp"
 
 Servo Servo_1;
 Servo Servo_2;
@@ -28,7 +30,6 @@ byte Mover_Servo(Servo Servo_1, int Angulo_Actual, int Angulo, int Velocidad);
 void setup()
 {
   Serial.begin(9600);
-  Bluetooth.begin(9600);
 
   Servo_1.attach(2);
   Servo_2.attach(3);
@@ -39,14 +40,13 @@ void setup()
 
   Home();
   delay(2000);
-  Serial.println(SERVO_1_DERECHA);
 }
 
 void loop()
 {
-  if (Bluetooth.available() > 0)
+  if (Serial.available() > 0)
   {
-    char _command = Bluetooth.read();
+    char _command = Serial.read();
 
     if (_command != '#' && _command != '!' && _command != '\n' && _command != '\r' && _command != ' ' && _command != '\t' && _command != '\0' && _command != '\b' && _command != '\f' && _command != '\v' && _command != '\a' && _command != '\e')
     {
