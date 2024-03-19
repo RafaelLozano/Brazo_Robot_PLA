@@ -13,19 +13,19 @@ Servo Servo_4;
 Servo Servo_5;
 Servo Servo_6;
 
-int Angulo = 0;
-int Angulo_1 = 90;
-int Angulo_2 = 90;
-int Angulo_3 = 90;
-int Angulo_4 = 90;
-int Angulo_5 = 90;
-int Angulo_6 = 90;
+volatile int Angulo = 0;
+volatile int Angulo_1 = 90;
+volatile int Angulo_2 = 90;
+volatile int Angulo_3 = 90;
+volatile int Angulo_4 = 90;
+volatile int Angulo_5 = 90;
+volatile int Angulo_6 = 90;
 
 String Estado;
 int Velocidad = 25;
 int Avance = 10;
 
-byte Mover_Servo(Servo Servo_1, int Angulo_Actual, int Angulo, int Velocidad);
+void Mover_Servo(Servo Servo_1, int Angulo_Actual, int Velocidad);
 
 void setup()
 {
@@ -62,76 +62,80 @@ void loop()
 
   if (Angulo_1 > 0 && Estado == SERVO_1_DERECHA)
   {
-
-    Angulo_1 = Mover_Servo(Servo_1, Angulo_1, Angulo_1 - Avance, Velocidad);
+    Angulo_1--;
+    Mover_Servo(Servo_1, Angulo_1, Velocidad);
   }
   else if (Angulo_1 < 180 && Estado == SERVO_1_IZQUIERDA)
   {
-    Angulo_1 = Mover_Servo(Servo_1, Angulo_1, Angulo_1 + Avance, Velocidad);
+    Angulo_1++;
+    Mover_Servo(Servo_1, Angulo_1, Velocidad);
   }
   else if (Angulo_2 > 0 && Estado == SERVO_2_DERECHA)
   {
-    Angulo_2 = Mover_Servo(Servo_2, Angulo_2, Angulo_2 - Avance, Velocidad);
+    Angulo_2--;
+    Mover_Servo(Servo_2, Angulo_2, Velocidad);
   }
   else if (Angulo_2 < 180 && Estado == SERVO_2_IZQUIERDA)
   {
-    Angulo_2 = Mover_Servo(Servo_2, Angulo_2, Angulo_2 + Avance, Velocidad);
-  }
-  else if (Angulo_3 < 180 && Estado == SERVO_3_DERECHA)
-  {
-    Angulo_3 = Mover_Servo(Servo_3, Angulo_3, Angulo_3 - Avance, Velocidad);
+    Angulo_2++;
+    Mover_Servo(Servo_2, Angulo_2, Velocidad);
   }
   else if (Angulo_3 > 0 && Estado == SERVO_3_IZQUIERDA)
   {
-    Angulo_3 = Mover_Servo(Servo_3, Angulo_3, Angulo_3 + Avance, Velocidad);
+    Angulo_3--;
+    Mover_Servo(Servo_3, Angulo_3, Velocidad);
   }
-  else if (Angulo_4 < 180 && Estado == SERVO_4_DERECHA)
+  else if (Angulo_3 < 180 && Estado == SERVO_3_DERECHA)
   {
-    Angulo_4 = Mover_Servo(Servo_4, Angulo_4, Angulo_4 - Avance, Velocidad);
+    Angulo_3++;
+    Mover_Servo(Servo_3, Angulo_3, Velocidad);
   }
   else if (Angulo_4 > 0 && Estado == SERVO_4_IZQUIERDA)
   {
-    Angulo_4 = Mover_Servo(Servo_4, Angulo_4, Angulo_4 + Avance, Velocidad);
+    Angulo_4--;
+    Mover_Servo(Servo_4, Angulo_4, Velocidad);
   }
-  else if (Angulo_5 < 180 && Estado == SERVO_5_DERECHA)
+  else if (Angulo_4 < 180 && Estado == SERVO_4_DERECHA)
   {
-    Angulo_5 = Mover_Servo(Servo_5, Angulo_5, Angulo_5 - Avance, Velocidad);
+    Angulo_4++;
+    Mover_Servo(Servo_4, Angulo_4, Velocidad);
   }
   else if (Angulo_5 > 0 && Estado == SERVO_5_IZQUIERDA)
   {
-    Angulo_5 = Mover_Servo(Servo_5, Angulo_5, Angulo_5 + Avance, Velocidad);
+    Angulo_5--;
+    Mover_Servo(Servo_5, Angulo_5, Velocidad);
   }
+
+  else if (Angulo_5 < 180 && Estado == SERVO_5_DERECHA)
+  {
+    Angulo_5++;
+
+    Mover_Servo(Servo_5, Angulo_5, Velocidad);
+  }
+  else if (Angulo_6 > 0 && Estado == SERVO_6_IZQUIERDA)
+  {
+    Angulo_6--;
+    Mover_Servo(Servo_6, Angulo_6, Velocidad);
+  }
+
   else if (Angulo_6 < 180 && Estado == SERVO_6_DERECHA)
   {
-    Angulo_6 = Mover_Servo(Servo_6, Angulo_6, Angulo_6 - Avance, Velocidad);
+    Angulo_6++;
+    Mover_Servo(Servo_6, Angulo_6, Velocidad);
   }
 }
 
 void Home()
 {
-  Angulo_1 = Mover_Servo(Servo_1, Angulo_1, 90, 25);
-  Angulo_2 = Mover_Servo(Servo_2, Angulo_2, 90, 25);
-  Angulo_3 = Mover_Servo(Servo_3, Angulo_3, 90, 25);
-  Angulo_4 = Mover_Servo(Servo_4, Angulo_4, 90, 10);
-  Angulo_5 = Mover_Servo(Servo_5, Angulo_5, 90, 10);
-  Angulo_6 = Mover_Servo(Servo_6, Angulo_6, 90, 10);
+  Mover_Servo(Servo_1, Angulo_1, 25);
+  Mover_Servo(Servo_2, Angulo_2, 25);
+  Mover_Servo(Servo_3, Angulo_3, 25);
+  Mover_Servo(Servo_4, Angulo_4, 10);
+  Mover_Servo(Servo_5, Angulo_5, 10);
+  Mover_Servo(Servo_6, Angulo_6, 10);
 }
-byte Mover_Servo(Servo Servo_1, int Angulo_Actual, int Angulo, int Velocidad)
+void Mover_Servo(Servo Servo_1, int Angulo_Actual, int Velocidad)
 {
-  while (Angulo_Actual != Angulo)
-  {
-    if (Angulo_Actual < Angulo)
-    {
-      Angulo_Actual++;
-      Servo_1.write(Angulo_Actual);
-      delay(Velocidad);
-    }
-    else
-    {
-      Angulo_Actual--;
-      Servo_1.write(Angulo_Actual);
-      delay(Velocidad);
-    }
-  }
-  return (Angulo_Actual);
+  Servo_1.write(Angulo_Actual);
+  delay(Velocidad);
 }
